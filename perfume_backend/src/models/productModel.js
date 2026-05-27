@@ -27,7 +27,7 @@ const createProduct = async (productData) => {
         parseFloat(sellPrice) || 0, 
         parseInt(quantity) || 0,    
         gender, 
-        image                        
+        image                  
     ];
 
     try {
@@ -42,7 +42,6 @@ const createProduct = async (productData) => {
 const updateProduct = async (id, productData) => {
     const { name, brand, costPrice, sellPrice, quantity, gender, image } = productData;
 
-    // Haddii sawir cusub la soo diro, waa la bedelayaa, haddii kale sawirkii hore ayaa loo daayaa
     let query;
     let values;
 
