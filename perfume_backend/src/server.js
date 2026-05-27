@@ -7,14 +7,12 @@ const morgan = require('morgan');
 const app = express();
 
 // 1. MIDDLEWARES 
-// Waxaan u habaynay CORS si uu u xalliyo ClientException-ka Chrome-ka
 app.use(cors({
-    origin: '*', // Waxay oggolaanaysaa dhammaan aaladaha (Flutter Web, Android, iwm)
+    origin: '*', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Helmet waxay u baahan tahay in yar oo habayn ah haddii sawirrada (Base64) la soo bandhigayo
 app.use(helmet({
     crossOriginResourcePolicy: false,
 })); 
@@ -23,7 +21,7 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// 2. DATABASE CONNECTION (Hubi in faylkan config/db.js uu sax yahay)
+// 2. DATABASE CONNECTION
 const pool = require('./config/db'); 
 
 // 3. ROUTES IMPORTS
@@ -53,6 +51,7 @@ app.use('/api/sales', salesRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/companies', companyRoutes); 
 app.use('/api/purchases', purchaseRoutes);
+// Halkan waa kharashRoutes-kii aan u habeynay
 app.use('/api/kharash', kharashRoutes); 
 app.use('/api/salaries', salaryRoutes); 
 app.use('/api/general', transactionRoutes); 
