@@ -1,12 +1,10 @@
 const { Pool } = require('pg');
-require('dotenv').config();
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
+  connectionString: process.env.DATABASE_URL, // Waxaan isticmaalaynaa hal link oo aan Environmental variable-ka ku gelinay
+  ssl: {
+    rejectUnauthorized: false // Waa muhiim Neon.tech
+  }
 });
 
 pool.connect()
@@ -14,7 +12,7 @@ pool.connect()
     console.log('✅ PostgreSQL Connected');
   })
   .catch((err) => {
-    console.log('❌ Database Error:', err.message);
+    console.error('❌ Database Error:', err.message);
   });
 
 module.exports = pool;
