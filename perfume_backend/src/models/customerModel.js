@@ -1,0 +1,34 @@
+const pool = require('../config/db');
+
+// Soo saarista dhamaan macaamiisha (GET)
+const getCustomers = async () => {
+    try {
+        const res = await pool.query('SELECT * FROM customers ORDER BY id DESC');
+        return res.rows; // Waxay soo celinaysaa array (liiska macaamiisha)
+    } catch (err) {
+        console.error("❌ SQL Error (getCustomers):", err.message);
+        throw err;
+    }
+};
+
+// Diiwaangelinta macmiil cusub (POST)
+const addCustomer = async (name, phone, email, address, points) => {
+    try {
+        const finalPoints = parseInt(points) || 0;
+
+        const query = `
+            INSERT INTO customers (name, phone, email, address, points) 
+            VALUES ($1, $2, $3, $4, $5) 
+            RETURNING *
+        `;
+        
+        const values = [name, phone, email, address, finalPoints];
+        const res = await pool.query(query, values);
+        return res.rows[0];
+    } catch (err) {
+        console.error("❌ SQL Error (addCustomer):", err.message);
+        throw err;
+    }
+};
+
+module.exports = { getCustomers, addCustomer };

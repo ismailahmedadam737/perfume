@@ -1,0 +1,42 @@
+name: perfume
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Garaafyada (Charts)
+  fl_chart: ^0.66.0
+
+  # Soo xulashada sawirrada (Gallery & Camera)
+  image_picker: ^1.2.2
+
+  # Xidhiidhka API-yada
+  http: ^1.1.0
+
+  # Taariikhda iyo Lacagta
+  intl: ^0.18.1
+
+  # Si aad u furto links-ka (Website, Phone, Map)
+  url_launcher: ^6.2.5
+
+  # --- MAKTABADDA PRINT-KA IYO PDF-KA ---
+  pdf: ^3.10.8
+  printing: ^5.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
