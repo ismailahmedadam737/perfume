@@ -6,8 +6,7 @@ import 'package:http/http.dart' as http;
 
 // ===================== PRODUCT SERVICE =====================
 class ProductService {
-  static const String baseUrl = 'http://localhost:5000/api/products';
-
+static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/products';
   static Future<bool> saveProduct({
     required String name,
     required String brand,
