@@ -17,32 +17,26 @@ class _CustomersPageState extends State<CustomersPage> {
   final _pointsController = TextEditingController();
 
   List<dynamic> _customers = [];
-  final String apiUrl = "https://perfume-api-hr26.onrender.com/api/customers";
+  final // Koodhkaaga dhexdiisa ku beddel nidaamkan:
+String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emulator isticmaalayso (10.0.2.2)
 
   @override
   void initState() {
     super.initState();
-    debugPrint("✅ CustomersPage initState: Xogta ayaa la soo rarayaa...");
     _fetchCustomers();
   }
 
   // API: Soo saarista xogta
   Future<void> _fetchCustomers() async {
-    debugPrint("📡 _fetchCustomers: Waxaan la xiriirayaa API-ga...");
     try {
       final response = await http.get(Uri.parse(apiUrl));
-      debugPrint("📡 Response status: ${response.statusCode}");
-      
       if (response.statusCode == 200) {
-        debugPrint("📦 Xogta la helay: ${response.body}");
         setState(() {
           _customers = json.decode(response.body);
         });
-      } else {
-        debugPrint("❌ Server error: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint("⚠️ Connection error: $e");
+      debugPrint("Error fetching: $e");
     }
   }
 
@@ -63,7 +57,7 @@ class _CustomersPageState extends State<CustomersPage> {
         );
 
         if (response.statusCode == 201) {
-          _fetchCustomers();
+          _fetchCustomers(); // Dib u soo qabo xogta cusub
           _clearControllers();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Macmiilka waa la diiwaangeliyey!")),
@@ -158,7 +152,7 @@ class _CustomersPageState extends State<CustomersPage> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: DataTable(
-                      headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
+                      headingRowColor: MaterialStateProperty.all(Colors.grey[50]),
                       horizontalMargin: 20,
                       columns: const [
                         DataColumn(label: Text("NAME", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),
