@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 
 // Kani waa adeeggaagii kharashka (Waxaa lagu daray Delete)
 class ProductService {
-  static const String baseUrl = 'http://localhost:5000/api/kharash';
+  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/kharash';
 
   static Future<bool> postKharash(Map<String, dynamic> data) async {
     try {
@@ -51,7 +52,8 @@ class ProductService {
 
 // Kani waa adeegga cusub ee Warbixinta Guud (General Report)
 class GeneralTransactionService {
-  static const String baseUrl = 'http://localhost:5000/api/general';
+  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/general';
 
   // Inaad soo akhriso stats-ka iyo dhamaan transactions-ka
   static Future<Map<String, dynamic>?> fetchGeneralReport() async {

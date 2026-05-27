@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DashboardService {
-  // ⚠️ Xasuusin: Haddii aad Emulator isticmaalayso, isticmaal "http://10.0.2.2:5000/api/dashboard/stats"
-  static const String baseUrl = "http://localhost:5000/api/dashboard/stats";
+  // ⚠️ Xasuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/dashboard/stats";
 
   /// Function-kan wuxuu soo celinayaa dhammaan tirsiga (counts) ee:
   /// products, employees, customers, iyo settings.

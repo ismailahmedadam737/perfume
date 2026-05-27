@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 class SettingsService {
-  // Ku beddel IP-ga server-kaaga ama domain-ka uu ku jiro API-gaaga
-  static const String baseUrl = "http://localhost:5000/api/settings";
+  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/settings";
 
   // 1. Soo qaado xogta (GET)
   static Future<Map<String, dynamic>?> fetchSettings() async {

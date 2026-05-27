@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class PurchaseService {
-  // Haddii aad emulator isticmaalayso waa 10.0.2.2.
-  // Haddii aad taleefan dhab ah isticmaalayso, ku qor IP-ga computer-kaaga.
-  static const String baseUrl = "http://localhost:5000/api/purchases";
+  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/purchases";
 
   // 1. Soo aqrinta dhamaan iibka (Read)
   Future<List<dynamic>> fetchPurchases() async {

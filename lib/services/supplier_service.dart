@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class SupplierService {
-  // ⚠️ MUHIIM: Haddii aad Emulator isticmaalayso, bedel 'localhost' una badal '10.0.2.2'
-  // Haddii aad telefoon dhab ah (Real Device) isticmaalayso, isticmaal IP-ga computer-kaaga.
-  static const String baseUrl = "http://localhost:5000/api/suppliers";
+  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/suppliers";
 
   // --- GET ALL SUPPLIERS ---
   static Future<List<dynamic>> getSuppliers() async {

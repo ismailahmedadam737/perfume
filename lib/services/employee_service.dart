@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class EmployeeService {
-  // ⚠️ Xusuusin: Haddii aad Emulator isticmaalayso, isticmaal "http://10.0.2.2:5000/api"
-  static const String baseUrl = "http://localhost:5000/api/employees";
-  static const String salaryUrl = "http://localhost:5000/api/salaries";
+  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/employees";
+  static const String salaryUrl = "https://perfume-api-hr26.onrender.com/api/salaries";
 
   // ============================================================
   // --- QAYBTA SHAQAALAHA (EMPLOYEE SECTION) ---

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class UserService {
-  // Hubi URL-kaaga: Chrome (localhost), Emulator (10.0.2.2)
-  static const String baseUrl = 'http://localhost:5000/api/users';
+  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/users';
 
   // 1. LOGIN: Hadda waxaan isticmaalaynaa POST request maadaama aad API-ga ku dartay
   static Future<Map<String, dynamic>?> loginUser(String email, String password) async {

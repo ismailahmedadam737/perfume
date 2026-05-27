@@ -17,7 +17,8 @@ class _CustomersPageState extends State<CustomersPage> {
   final _pointsController = TextEditingController();
 
   List<dynamic> _customers = [];
-  final String apiUrl = "http://localhost:5000/api/customers"; // Bedel hadii aad emulator isticmaalayso (10.0.2.2)
+  final // Koodhkaaga dhexdiisa ku beddel nidaamkan:
+String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emulator isticmaalayso (10.0.2.2)
 
   @override
   void initState() {
