@@ -1,22 +1,26 @@
-const userModel = require('../models/userModel');
+const pool = require('../config/db');
 
-exports.loginUser = async (req, res) => {
+const getUserByEmailAndPassword = async (email, password) => {
     try {
-        const { email, password } = req.body;
+        // Waxaan hubinaynaa in columns-ka ay sax yihiin
+        const query = 'SELECT id, name, email, role, password FROM users WHERE email = $1';
+        const res = await pool.query(query, [email]);
         
-        // Wacista Model-ka
-        const user = await userModel.getUserByEmailAndPassword(email, password);
-
-        if (user) {
-            // Ka saar password-ka ka hor inta aadan u celin Flutter
-            const { password, ...userWithoutPassword } = user;
-            res.status(200).json({ success: true, user: userWithoutPassword });
-        } else {
-            res.status(401).json({ success: false, message: "Email ama Password khaldan" });
+        if (res.rows.length === 0) {
+            return null; // User lama helin
         }
+        
+        const user = res.rows[0];
+        
+        // Hubinta password-ka (Haddii aad isticmaasho hashing mustaqbalka, halkan ayaad ku beddeli)
+        if (user.password === password) {
+            return user;
+        }
+        
+        return null; // Password-ku wuu qaldan yahay
     } catch (error) {
-        console.error("❌ Login Controller Error:", error.message);
-        res.status(500).json({ success: false, message: error.message });
+        throw new Error("Database query failed: " + error.message);
     }
 };
-// ... (Waa in aad haysataa function-yadii kale ee getUsers, addUser, deleteUser)
+
+module.exports = { getUserByEmailAndPassword /* iyo function-yada kale */ };
