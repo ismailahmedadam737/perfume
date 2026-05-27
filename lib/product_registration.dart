@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 
 // ===================== PRODUCT SERVICE =====================
 class ProductService {
-static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/products';
+  // Waxaan u beddelay URL-ka rasmiga ah ee Render
+  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/products';
+
   static Future<bool> saveProduct({
     required String name,
     required String brand,
@@ -45,7 +47,6 @@ static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/product
     }
   }
 
-  // CUSUB: Function-ka cusboonaysiinta (Update)
   static Future<bool> updateProduct(int id, {
     required String name,
     required String brand,
@@ -159,7 +160,7 @@ class _ProductRegistrationPageState extends State<ProductRegistrationPage> {
   final List<String> _genderOptions = ['Men', 'Women', 'Unisex'];
   List<Product> _products = [];
   bool _isLoading = false;
-  int? _editingProductId; // Track haddii wax la bedelayo
+  int? _editingProductId;
 
   @override
   void initState() {
@@ -505,7 +506,7 @@ class _ProductRegistrationPageState extends State<ProductRegistrationPage> {
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
-                    "Udgoon qaali ah oo loogu talagalay dadka jecel inay markasta u muuqdaan kuwo heer sare ah. .",
+                    "Udgoon qaali ah oo loogu talagalay dadka jecel inay markasta u muuqdaan kuwo heer sare ah.",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white70),
                   ),
