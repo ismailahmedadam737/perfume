@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const app = express();
 
 // 1. MIDDLEWARES
+// Waxaan hubinaynaa in CORS uu oggolaado dhammaan codsiyada
 app.use(cors({
     origin: '*', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -21,7 +22,7 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// 2. DATABASE CONNECTION (Verification)
+// 2. DATABASE CONNECTION
 const pool = require('./config/db'); 
 pool.query('SELECT NOW()', (err) => {
     if (err) console.error('❌ Database connection error:', err.stack);
@@ -64,7 +65,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.get('/', (req, res) => {
   res.status(200).json({ 
     success: true, 
-    message: '🚀 Perfume Backend is Running!',
+    message: '🚀 Perfume Backend is Running on Render!',
     status: 'Healthy'
   });
 });
@@ -74,7 +75,7 @@ app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Route-kan lama helin!" });
 });
 
-// 7. GLOBAL ERROR HANDLER (Haddii server-ku gubto)
+// 7. GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: "Server Error: Wax baa khaldamay!" });
@@ -82,7 +83,6 @@ app.use((err, req, res, next) => {
 
 // 8. START SERVER
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📡 Dashboard API: http://localhost:${PORT}/api/dashboard/stats`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server is running on port ${PORT}`);
 });
