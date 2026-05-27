@@ -17,8 +17,9 @@ class _CustomersPageState extends State<CustomersPage> {
   final _pointsController = TextEditingController();
 
   List<dynamic> _customers = [];
-  final // Koodhkaaga dhexdiisa ku beddel nidaamkan:
-String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emulator isticmaalayso (10.0.2.2)
+  
+  // URL-ka saxda ah ee Render
+  final String apiUrl = "https://perfume-api-hr26.onrender.com/api/customers";
 
   @override
   void initState() {
@@ -152,7 +153,7 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: DataTable(
-                      headingRowColor: MaterialStateProperty.all(Colors.grey[50]),
+                      headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
                       horizontalMargin: 20,
                       columns: const [
                         DataColumn(label: Text("NAME", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),

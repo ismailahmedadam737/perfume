@@ -5,6 +5,7 @@ const getAllCustomers = async (req, res) => {
         const customers = await Customer.getCustomers();
         res.status(200).json(customers);
     } catch (err) {
+        console.error("Dashboard Controller Error:", err.message);
         res.status(500).json({ error: err.message });
     }
 };
@@ -15,6 +16,7 @@ const createCustomer = async (req, res) => {
         const newCustomer = await Customer.addCustomer(name, phone, email, address, points);
         res.status(201).json(newCustomer);
     } catch (err) {
+        console.error("Dashboard Controller Error:", err.message);
         res.status(500).json({ error: err.message });
     }
 };
