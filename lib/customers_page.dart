@@ -17,40 +17,32 @@ class _CustomersPageState extends State<CustomersPage> {
   final _pointsController = TextEditingController();
 
   List<dynamic> _customers = [];
-  
-  // API URL-ka saxda ah (Hubi in backend-kaagu leeyahay /api/customers)
   final String apiUrl = "https://perfume-api-hr26.onrender.com/api/customers";
 
   @override
   void initState() {
     super.initState();
+    debugPrint("✅ CustomersPage initState: Xogta ayaa la soo rarayaa...");
     _fetchCustomers();
   }
 
   // API: Soo saarista xogta
   Future<void> _fetchCustomers() async {
+    debugPrint("📡 _fetchCustomers: Waxaan la xiriirayaa API-ga...");
     try {
       final response = await http.get(Uri.parse(apiUrl));
+      debugPrint("📡 Response status: ${response.statusCode}");
       
       if (response.statusCode == 200) {
+        debugPrint("📦 Xogta la helay: ${response.body}");
         setState(() {
           _customers = json.decode(response.body);
         });
       } else {
-        debugPrint("Server error: ${response.statusCode}");
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Server Error: ${response.statusCode}")),
-          );
-        }
+        debugPrint("❌ Server error: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint("Connection error: $e");
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Connection error: Fadlan hubi Internet-kaaga")),
-        );
-      }
+      debugPrint("⚠️ Connection error: $e");
     }
   }
 
@@ -71,13 +63,11 @@ class _CustomersPageState extends State<CustomersPage> {
         );
 
         if (response.statusCode == 201) {
-          _fetchCustomers(); // Dib u soo qabo xogta cusub
+          _fetchCustomers();
           _clearControllers();
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Macmiilka waa la diiwaangeliyey!")),
-            );
-          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Macmiilka waa la diiwaangeliyey!")),
+          );
         }
       } catch (e) {
         debugPrint("Error adding: $e");
@@ -179,10 +169,10 @@ class _CustomersPageState extends State<CustomersPage> {
                       ],
                       rows: _customers.map((customer) {
                         return DataRow(cells: [
-                          DataCell(Text(customer['name']?.toString() ?? '-')),
-                          DataCell(Text(customer['phone']?.toString() ?? '-')),
-                          DataCell(Text(customer['email']?.toString() ?? '-')),
-                          DataCell(Text(customer['address']?.toString() ?? '-')),
+                          DataCell(Text(customer['name'].toString(), style: const TextStyle(fontWeight: FontWeight.w500))),
+                          DataCell(Text(customer['phone'].toString())),
+                          DataCell(Text(customer['email'].toString())),
+                          DataCell(Text(customer['address'].toString())),
                           DataCell(
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -191,7 +181,7 @@ class _CustomersPageState extends State<CustomersPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
-                                "${customer['points'] ?? 0} pts",
+                                "${customer['points']} pts",
                                 style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
                               ),
                             ),
