@@ -23,7 +23,7 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// 2. DATABASE CONNECTION
+// 2. DATABASE CONNECTION (Hubi in faylkan config/db.js uu sax yahay)
 const pool = require('./config/db'); 
 
 // 3. ROUTES IMPORTS
@@ -40,7 +40,6 @@ const purchaseRoutes = require('./routes/purchaseRoutes');
 const kharashRoutes = require('./routes/kharashRoutes'); 
 const salaryRoutes = require('./routes/salaryRoutes'); 
 const transactionRoutes = require('./routes/transactionRoutes'); 
-// --- DASHBOARD ROUTE ---
 const dashboardRoutes = require('./routes/dashboardRoutes'); 
 
 // 4. ROUTES USAGE
@@ -57,7 +56,6 @@ app.use('/api/purchases', purchaseRoutes);
 app.use('/api/kharash', kharashRoutes); 
 app.use('/api/salaries', salaryRoutes); 
 app.use('/api/general', transactionRoutes); 
-// --- DASHBOARD USAGE ---
 app.use('/api/dashboard', dashboardRoutes); 
 
 // 5. TEST ROUTE
@@ -70,7 +68,7 @@ app.get('/', (req, res) => {
 });
 
 // 6. ERROR HANDLING (404)
-app.use((req, res) => {
+app.use((req, res, next) => {
   res.status(404).json({ 
     success: false, 
     message: "Route-kan lama helin!" 
