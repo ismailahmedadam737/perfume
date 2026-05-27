@@ -1,17 +1,17 @@
 const { Pool } = require('pg');
+require('dotenv').config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // Waxaan SSL-ka ka saarnay si aan u hubinno inay taasi tahay ciladdu
-  ssl: false 
+  ssl: {
+    rejectUnauthorized: false // Tani waa furaha Neon
+  }
 });
 
-pool.connect()
-  .then(() => {
-    console.log('✅ PostgreSQL Connected (SSL Disabled)');
-  })
-  .catch((err) => {
-    console.error('❌ Database Error:', err.message);
-  });
+// Si aan u ogaano haddii uu error dhacayo markuu wacayo DB
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
+});
 
 module.exports = pool;
