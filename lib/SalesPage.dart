@@ -14,7 +14,9 @@ class SalesPage extends StatefulWidget {
 }
 
 class _SalesPageState extends State<SalesPage> {
-  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/';
+  // --- BASE URL OO LA HAGAAJIYAY ---
+  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api';
+  
   static const Color primaryDark = Color(0xFF1E1E2D);
   static const Color backgroundColor = Color(0xFFF4F7FA);
 
@@ -42,7 +44,7 @@ class _SalesPageState extends State<SalesPage> {
     double amountBeforeDiscount = qty * unitPrice;
 
     pdf.addPage(
-  pw.Page(
+      pw.Page(
         pageFormat: PdfPageFormat.roll80,
         margin: const pw.EdgeInsets.all(10),
         build: (pw.Context context) => pw.Column(
@@ -63,7 +65,6 @@ class _SalesPageState extends State<SalesPage> {
             pw.SizedBox(height: 5),
             pw.Divider(thickness: 0.5),
             
-            // INVOICE - Red Color
             pw.Center(
               child: pw.Text(
                 "INVOICE", 
@@ -79,7 +80,6 @@ class _SalesPageState extends State<SalesPage> {
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
-                // Invoice No - Red Color (Sidii aad hore u codsatay)
                 pw.Text(
                   "No: ${item['invoice_no']}", 
                   style: pw.TextStyle(
@@ -103,7 +103,7 @@ class _SalesPageState extends State<SalesPage> {
                     _pCell("Item", true),
                     _pCell("Qty", true),
                     _pCell("Unit Price", true), 
-                    _pCell("Amount", true),     
+                    _pCell("Amount", true),    
                   ],
                 ),
                 pw.TableRow(
@@ -161,12 +161,14 @@ class _SalesPageState extends State<SalesPage> {
         http.get(Uri.parse('$baseUrl/sales')),
         ProductService.fetchKharashyada(),
       ]);
-      setState(() {
-        products = jsonDecode((responses[0] as http.Response).body);
-        soldItems = jsonDecode((responses[1] as http.Response).body);
-        generalExpenses = responses[2] as List<dynamic>;
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          products = jsonDecode((responses[0] as http.Response).body);
+          soldItems = jsonDecode((responses[1] as http.Response).body);
+          generalExpenses = responses[2] as List<dynamic>;
+          isLoading = false;
+        });
+      }
     } catch (e) { if (mounted) setState(() => isLoading = false); }
   }
 
@@ -267,9 +269,7 @@ class _SalesPageState extends State<SalesPage> {
     ),
   );
 
-  // --- 4. FORM-KA IIBKA ---
   void _showSalesForm() {
-    // Automatic Number Generation: Waxay ka bilaabanaysaa 49119
     int nextNumber = 49119 + soldItems.length;
     
     final invC = TextEditingController(text: nextNumber.toString());
@@ -282,7 +282,7 @@ class _SalesPageState extends State<SalesPage> {
       content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(
           controller: invC, 
-          readOnly: true, // Gacanta laguma bedeli karo
+          readOnly: true,
           decoration: const InputDecoration(labelText: "No:", labelStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))
         ),
         DropdownButtonFormField<String>(
@@ -310,7 +310,7 @@ class _SalesPageState extends State<SalesPage> {
           double total = (uPrice * qty) - disc;
 
           _addSaleToDb({
-            "invoice_no": invC.text, // Lambarka automatic-ga ah
+            "invoice_no": invC.text,
             "product_name": selectedPerfume,
             "quantity": qty,
             "discount": disc,
