@@ -14,7 +14,7 @@ class SalesPage extends StatefulWidget {
 }
 
 class _SalesPageState extends State<SalesPage> {
-  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/sales';
+  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/';
   static const Color primaryDark = Color(0xFF1E1E2D);
   static const Color backgroundColor = Color(0xFFF4F7FA);
 
