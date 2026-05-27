@@ -6,7 +6,7 @@ const morgan = require('morgan');
 
 const app = express();
 
-// 1. MIDDLEWARES 
+// 1. MIDDLEWARES
 app.use(cors({
     origin: '*', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -21,8 +21,12 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// 2. DATABASE CONNECTION
+// 2. DATABASE CONNECTION (Verification)
 const pool = require('./config/db'); 
+pool.query('SELECT NOW()', (err) => {
+    if (err) console.error('❌ Database connection error:', err.stack);
+    else console.log('✅ Database connection is healthy.');
+});
 
 // 3. ROUTES IMPORTS
 const userRoutes = require('./routes/userRoutes'); 
@@ -51,7 +55,6 @@ app.use('/api/sales', salesRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/companies', companyRoutes); 
 app.use('/api/purchases', purchaseRoutes);
-// Halkan waa kharashRoutes-kii aan u habeynay
 app.use('/api/kharash', kharashRoutes); 
 app.use('/api/salaries', salaryRoutes); 
 app.use('/api/general', transactionRoutes); 
@@ -66,15 +69,18 @@ app.get('/', (req, res) => {
   });
 });
 
-// 6. ERROR HANDLING (404)
+// 6. 404 HANDLING
 app.use((req, res, next) => {
-  res.status(404).json({ 
-    success: false, 
-    message: "Route-kan lama helin!" 
-  });
+  res.status(404).json({ success: false, message: "Route-kan lama helin!" });
 });
 
-// 7. START SERVER
+// 7. GLOBAL ERROR HANDLER (Haddii server-ku gubto)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ success: false, message: "Server Error: Wax baa khaldamay!" });
+});
+
+// 8. START SERVER
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
