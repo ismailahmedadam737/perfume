@@ -25,14 +25,16 @@ class PerfumeSystem extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, primarySwatch: Colors.purple),
+      // Marka hore waxaa la tusi doonaa LoginPage
       home: const LoginPage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  final String role;
-  const HomePage({super.key, this.role = "User"});
+  final String role; 
+  // Role-ka waxaa laga helayaa LoginPage marka uu Login-ku guulaysto
+  const HomePage({super.key, required this.role});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -40,7 +42,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 1;
-  final ScrollController _sideBarController = ScrollController();
   late List<Widget> _pages;
 
   @override
@@ -64,14 +65,18 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
-  // FUNTION-KAN WUXUU XALIYAY CRASH-KA ADMIN-KA
   Widget _getSelectedPage() {
     bool isAdmin = widget.role.toLowerCase() == 'admin';
     List<int> adminOnlyPages = [0, 6, 8, 10, 12, 13];
 
+    // Haddii uu yahay User caadi ah oo isku dayay inuu galo bog Admin, u celi Dashboard
     if (!isAdmin && adminOnlyPages.contains(selectedIndex)) {
-      return _pages[1]; // Ku celi Dashboard haddii uu isku dayo inuu galo bog Admin
+      return _pages[1]; 
     }
+    
+    // Hubinta index-ka si uusan App-ku u crash-gareyn
+    if (selectedIndex < 0 || selectedIndex >= _pages.length) return _pages[1];
+    
     return _pages[selectedIndex];
   }
 
@@ -92,12 +97,13 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView(
-                    controller: _sideBarController,
                     children: [
                       _sideBarItem(Icons.grid_view_rounded, "Dashboard", 1),
                       _sideBarItem(Icons.people_alt_outlined, "Customers", 2),
                       _sideBarItem(Icons.shopping_bag_outlined, "Products", 3),
                       _sideBarItem(Icons.people_outline, "Employees", 4),
+                      
+                      // Halkan ayay ka muuqanayaan Menu-yada Admin-ka kaliya
                       if (isAdmin) ...[
                         _sideBarItem(Icons.monetization_on_outlined, "Salary Management", 12),
                         _sideBarItem(Icons.history_rounded, "Sales History", 6),
@@ -106,6 +112,7 @@ class _HomePageState extends State<HomePage> {
                         _sideBarItem(Icons.analytics_outlined, "General Report", 0),
                         _sideBarItem(Icons.auto_stories_rounded, "System User Guide", 13),
                       ],
+                      
                       _sideBarItem(Icons.calendar_month_outlined, "Sales products", 5),
                       _sideBarItem(Icons.payments_outlined, "Expenses", 7),
                       _sideBarItem(Icons.local_shipping_outlined, "Suppliers", 9),
@@ -129,6 +136,7 @@ class _HomePageState extends State<HomePage> {
     return InkWell(
       onTap: () {
         if (index == -1) {
+          // Log Out
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
         } else {
           setState(() => selectedIndex = index);
