@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:perfume/services/Customer%20Service.dart';
 
 class CustomersPage extends StatefulWidget {
   const CustomersPage({super.key});
@@ -17,8 +16,6 @@ class _CustomersPageState extends State<CustomersPage> {
   final _pointsController = TextEditingController();
 
   List<dynamic> _customers = [];
-  final // Koodhkaaga dhexdiisa ku beddel nidaamkan:
-String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emulator isticmaalayso (10.0.2.2)
 
   @override
   void initState() {
@@ -29,12 +26,10 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
   // API: Soo saarista xogta
   Future<void> _fetchCustomers() async {
     try {
-      final response = await http.get(Uri.parse(apiUrl));
-      if (response.statusCode == 200) {
-        setState(() {
-          _customers = json.decode(response.body);
-        });
-      }
+      List<dynamic> data = await CustomerService.getCustomers();
+      setState(() {
+        _customers = data;
+      });
     } catch (e) {
       debugPrint("Error fetching: $e");
     }
@@ -44,25 +39,22 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
   Future<void> _addCustomer() async {
     if (_nameController.text.isNotEmpty && _phoneController.text.isNotEmpty) {
       try {
-        final response = await http.post(
-          Uri.parse(apiUrl),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({
-            "name": _nameController.text,
-            "phone": _phoneController.text,
-            "email": _emailController.text,
-            "address": _addressController.text,
-            "points": int.tryParse(_pointsController.text) ?? 0,
-          }),
-        );
+        Map<String, dynamic> newCustomerData = {
+          "name": _nameController.text,
+          "phone": _phoneController.text,
+          "email": _emailController.text,
+          "address": _addressController.text,
+          "points": int.tryParse(_pointsController.text) ?? 0,
+        };
 
-        if (response.statusCode == 201) {
-          _fetchCustomers(); // Dib u soo qabo xogta cusub
-          _clearControllers();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Macmiilka waa la diiwaangeliyey!")),
-          );
-        }
+        await CustomerService.addCustomer(newCustomerData);
+        
+        _fetchCustomers(); // Dib u soo qabo xogta cusub
+        _clearControllers();
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Macmiilka waa la diiwaangeliyey!")),
+        );
       } catch (e) {
         debugPrint("Error adding: $e");
       }
@@ -152,7 +144,7 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: DataTable(
-                      headingRowColor: MaterialStateProperty.all(Colors.grey[50]),
+                      headingRowColor: WidgetStateProperty.all(Colors.grey[50]),
                       horizontalMargin: 20,
                       columns: const [
                         DataColumn(label: Text("NAME", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),
