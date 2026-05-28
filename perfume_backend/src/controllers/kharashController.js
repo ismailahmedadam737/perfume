@@ -25,14 +25,14 @@ exports.addKharash = async (req, res) => {
     const newEntry = await Kharash.create({ title, amount, note });
     res.status(201).json({ success: true, data: newEntry });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Cilad ayaa dhacday." });
+    res.status(500).json({ success: false, message: "Cilad ayaa dhacday: " + error.message });
   }
 };
 
-// --- 3. QAYBTA CUSUB: TIRTIRISTA ---
+// 3. Tirtiridda
 exports.deleteKharash = async (req, res) => {
   try {
-    const { id } = req.params; // Waxaan ID-ga ka soo qabanaynaa URL-ka
+    const { id } = req.params;
     const deleted = await Kharash.delete(id);
 
     if (deleted) {

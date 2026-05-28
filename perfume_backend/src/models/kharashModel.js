@@ -21,11 +21,11 @@ const Kharash = {
     return rows;
   },
 
-  // --- QAYBTA CUSUB: TIRTIRISTA ---
+  // Tirtirista
   delete: async (id) => {
     const query = 'DELETE FROM expenses WHERE id = $1 RETURNING *;';
     const { rows } = await pool.query(query, [id]);
-    return rows[0]; // Waxay soo celinaysaa xogtii la tirtiray si loo xaqiijiyo
+    return rows[0]; 
   }
 };
 
