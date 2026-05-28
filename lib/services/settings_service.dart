@@ -3,10 +3,9 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 class SettingsService {
-  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  // Hubi in URL-kan uu yahay midka saxda ah ee Render
   static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/settings";
 
-  // 1. Soo qaado xogta (GET)
   static Future<Map<String, dynamic>?> fetchSettings() async {
     try {
       final response = await http.get(Uri.parse(baseUrl));
@@ -24,7 +23,6 @@ class SettingsService {
     }
   }
 
-  // 2. Keydi ama Update garee xogta (POST)
   static Future<bool> saveSettings({
     required String shopName,
     required String currencyName,
@@ -35,7 +33,7 @@ class SettingsService {
     required bool isRegistered,
   }) async {
     try {
-      // Sawirka Bytes-ka ah u beddel Base64 si loogu keydiyo PostgreSQL TEXT field
+      // Sawirka Bytes-ka ah u beddel Base64
       String? logoBase64;
       if (logoBytes != null) {
         logoBase64 = base64Encode(logoBytes);
@@ -47,7 +45,7 @@ class SettingsService {
         "phone": phone,
         "webLink": webLink,
         "social": social,
-        "logoData": logoBase64,
+        "logoData": logoBase64, // Hubi inuu magacaan la mid yahay kan Controller-ka
         "isRegistered": isRegistered,
       };
 
@@ -57,11 +55,14 @@ class SettingsService {
         body: json.encode(body),
       );
 
+      // Haddii status-ka uu yahay 200, waxaan u qaadanaynaa inuu guulaystay
       if (response.statusCode == 200) {
         final result = json.decode(response.body);
         return result['success'] == true;
+      } else {
+        print("API Error: ${response.statusCode} - ${response.body}");
+        return false;
       }
-      return false;
     } catch (e) {
       print("Cillad ayaa dhacday keydinta: $e");
       return false;
