@@ -45,8 +45,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 1; 
   final ScrollController _sideBarController = ScrollController();
-
-  // Waxaan u beddelnay 'late' si DashboardPage uu u helo function-ka 'onCardTap'
   late List<Widget> _pages;
 
   @override
@@ -57,24 +55,24 @@ class _HomePageState extends State<HomePage> {
 
   void _initializePages() {
     _pages = [
-      const GeneralReportPage(),       // 0
+      const GeneralReportPage(),        // 0
       DashboardPage(onCardTap: (index) {
         setState(() {
           selectedIndex = index;
         });
-      }),                              // 1
-      const CustomersPage(),           // 2
-      const ProductRegistrationPage(), // 3
-      const EmployeePage(),            // 4
-      const SalesPage(),               // 5
-      const SalesHistoryPage(),        // 6
-      const ExpensesPage(),            // 7
-      const PurchasePage(),            // 8
-      const SuppliersPage(),           // 9
-      const UsersPage(),               // 10
-      const SettingsPage(),            // 11
-      EmployeeSalaryPage(),            // 12
-      const SystemGuidePage(),         // 13 <-- TALLAABADA 2: Halkan waxaan ku darnay Bogga Hanuuniyaha System-ka
+      }),                               // 1
+      const CustomersPage(),            // 2
+      const ProductRegistrationPage(),  // 3
+      const EmployeePage(),             // 4
+      const SalesPage(),                // 5
+      const SalesHistoryPage(),         // 6
+      const ExpensesPage(),             // 7
+      const PurchasePage(),             // 8
+      const SuppliersPage(),            // 9
+      const UsersPage(),                // 10
+      const SettingsPage(),             // 11
+      EmployeeSalaryPage(),             // 12
+      const SystemGuidePage(),          // 13
     ];
   }
 
@@ -112,7 +110,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 Expanded(
                   child: RawScrollbar(
                     controller: _sideBarController,
@@ -135,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                           _sideBarItem(Icons.shopping_cart_checkout, "Purchases", 8),
                           _sideBarItem(Icons.manage_accounts_outlined, "Users Management", 10),
                           _sideBarItem(Icons.analytics_outlined, "General Report", 0),
-                          _sideBarItem(Icons.auto_stories_rounded, "System User Guide", 13), // <-- TALLAABADA 3: Badhanka Sidebar-ka ee Admin-ka kaliya arkayo
+                          _sideBarItem(Icons.auto_stories_rounded, "System User Guide", 13),
                         ],
 
                         _sideBarItem(Icons.calendar_month_outlined, "Sales products", 5),
@@ -146,7 +143,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-
                 const Divider(color: Colors.white10),
                 _sideBarItem(Icons.logout, "Log Out", -1),
                 const SizedBox(height: 10),
@@ -154,9 +150,11 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // --- MAIN CONTENT ---
+          // --- MAIN CONTENT (Halkan waxaa lagu daray hubinta safety-ga) ---
           Expanded(
-            child: _pages[selectedIndex],
+            child: (selectedIndex >= 0 && selectedIndex < _pages.length)
+                ? _pages[selectedIndex]
+                : const Center(child: CircularProgressIndicator()),
           ),
         ],
       ),
@@ -179,23 +177,15 @@ class _HomePageState extends State<HomePage> {
           });
         }
       },
-      hoverColor: Colors.white.withOpacity(0.1),
-      splashColor: Colors.pinkAccent.withOpacity(0.2),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
           color: isSelected ? Colors.white.withOpacity(0.05) : Colors.transparent,
-          border: isSelected 
-              ? const Border(left: BorderSide(color: Colors.pinkAccent, width: 4)) 
-              : null,
+          border: isSelected ? const Border(left: BorderSide(color: Colors.pinkAccent, width: 4)) : null,
         ),
         child: Row(
           children: [
-            Icon(
-              icon, 
-              color: isSelected ? Colors.pinkAccent : Colors.grey[400], 
-              size: 22
-            ),
+            Icon(icon, color: isSelected ? Colors.pinkAccent : Colors.grey[400], size: 22),
             const SizedBox(width: 15),
             Text(
               title,
