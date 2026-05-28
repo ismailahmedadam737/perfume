@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perfume/services/user_service.dart';
-import 'package:perfume/main.dart'; // Hubi inuu yahay path-ka HomePage-kaaga
+import 'package:perfume/main.dart'; 
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,14 +26,18 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isLoading = true);
 
     try {
+      // 1. U yeer Service-ka
       var responseData = await UserService.loginUser(email, password);
 
+      // 2. Hubi jawaabta Server-ka
       if (responseData != null && responseData['success'] == true) {
-        // Halkan waxaan ka soo saaraynaa role-ka sida server-ku u soo diray
-        String userRole = 'user';
-        if (responseData.containsKey('user')) {
-          userRole = responseData['user']['role']?.toString().toLowerCase().trim() ?? 'user';
-        }
+        
+        // 3. Ka saar role-ka xogta (user object)
+        var user = responseData['user'];
+        String userRole = user['role'].toString().toLowerCase().trim();
+
+        // LOGGING: Tani waxay kuu sheegaysaa in App-ku gartay 'admin'
+        print("DEBUG: Login Successful. Role-ka laga helay server-ka waa: $userRole");
 
         if (mounted) {
           Navigator.pushReplacement(
@@ -47,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
         _showSnackBar("Login failed: Email ama Password khaldan");
       }
     } catch (e) {
+      print("Login Page Error: $e");
       _showSnackBar("Error: $e");
     } finally {
       if (mounted) setState(() => _isLoading = false);
