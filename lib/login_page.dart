@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perfume/services/user_service.dart';
-import 'package:perfume/main.dart'; 
+import 'package:perfume/main.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,9 +12,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false;
   bool _isLoading = false;
 
+  // Function-ka asalka ahaa ee Login-ka
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -30,30 +30,13 @@ class _LoginPageState extends State<LoginPage> {
       var responseData = await UserService.loginUser(email, password);
 
       if (responseData != null) {
-        print("DEBUG: API Response: $responseData");
-        
-        String userRole = 'user'; 
-
-        // SAFE LOGIC: Waxaan baaraynaa labada meelood ee role-ku ku jiri karo
-        if (responseData is Map) {
-          // 1. Haddii uu ku jiro 'user' object (sida: {user: {role: admin}})
-          if (responseData.containsKey('user') && responseData['user'] is Map) {
-            userRole = (responseData['user']['role'] ?? 'user').toString();
-          } 
-          // 2. Haddii uu toos ugu jiro (sida: {role: admin})
-          else {
-            userRole = (responseData['role'] ?? 'user').toString();
-          }
-        } 
-        // 3. Haddii uu yahay List
-        else if (responseData is List && responseData.isNotEmpty) {
-          var firstItem = responseData[0];
-          if (firstItem is Map) {
-            userRole = (firstItem['role'] ?? 'user').toString();
-          }
+        // Waxaan u qaadanaynaa role-ka sidii aan horey u saxnay (user object gudahiisa)
+        String userRole = 'user';
+        if (responseData is Map && responseData.containsKey('user')) {
+           userRole = responseData['user']['role'].toString();
+        } else if (responseData is Map) {
+           userRole = responseData['role']?.toString() ?? 'user';
         }
-
-        print("DEBUG: Final Role identified: $userRole");
 
         if (mounted) {
           Navigator.pushReplacement(
@@ -64,11 +47,10 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       } else {
-        _showSnackBar("Email ama Password khaldan ama server-ka ayaa diiday!");
+        _showSnackBar("Login failed: Email ama Password khaldan");
       }
     } catch (e) {
-      _showSnackBar("Khalad ayaa dhacay: $e");
-      print("Error: $e");
+      _showSnackBar("Error: $e");
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -76,13 +58,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showSnackBar(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
+    // UI-ga asalka ahaa
     return Scaffold(
       body: Center(
         child: Container(
@@ -100,15 +81,8 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               TextField(
                 controller: _passwordController,
-                obscureText: !_isPasswordVisible,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
-                  ),
-                ),
+                obscureText: true,
+                decoration: const InputDecoration(labelText: "Password", border: OutlineInputBorder()),
               ),
               const SizedBox(height: 30),
               _isLoading
