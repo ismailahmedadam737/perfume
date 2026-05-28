@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class CustomerService {
   // Hubi in URL-ku uu yahay midka saxda ah ee API-gaaga
-  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/customers";
+  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/customers/all";
 
   // --- SOO SAARISTA DHAMAAN MACAAMIISHA ---
   static Future<List<dynamic>> getCustomers() async {
