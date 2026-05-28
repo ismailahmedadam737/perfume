@@ -30,24 +30,27 @@ class _LoginPageState extends State<LoginPage> {
       var responseData = await UserService.loginUser(email, password);
 
       if (responseData != null) {
-        // DEBUG: Si aan u aragno waxa server-ka ka yimid
         print("DEBUG: API Response: $responseData");
         
         String userRole = 'user'; 
 
-        // SAFE LOGIC: Si aysan u dhicin cilada 'first'
-        // Haddii uu yahay List
-        if (responseData is List) {
-          if (responseData.isNotEmpty) {
-            var firstItem = responseData[0];
-            if (firstItem is Map) {
-              userRole = (firstItem['role'] ?? 'user').toString();
-            }
+        // SAFE LOGIC: Waxaan baaraynaa labada meelood ee role-ku ku jiri karo
+        if (responseData is Map) {
+          // 1. Haddii uu ku jiro 'user' object (sida: {user: {role: admin}})
+          if (responseData.containsKey('user') && responseData['user'] is Map) {
+            userRole = (responseData['user']['role'] ?? 'user').toString();
+          } 
+          // 2. Haddii uu toos ugu jiro (sida: {role: admin})
+          else {
+            userRole = (responseData['role'] ?? 'user').toString();
           }
         } 
-        // Haddii uu yahay Map (Object)
-        else if (responseData is Map) {
-          userRole = (responseData['role'] ?? 'user').toString();
+        // 3. Haddii uu yahay List
+        else if (responseData is List && responseData.isNotEmpty) {
+          var firstItem = responseData[0];
+          if (firstItem is Map) {
+            userRole = (firstItem['role'] ?? 'user').toString();
+          }
         }
 
         print("DEBUG: Final Role identified: $userRole");
