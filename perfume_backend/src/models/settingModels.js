@@ -1,6 +1,5 @@
 const pool = require('../config/db');
 
-// 1. Soo qaado xogta dukaanka
 const getSettings = async () => {
     try {
         const res = await pool.query('SELECT * FROM shop_settings WHERE id = 1 LIMIT 1');
@@ -11,21 +10,21 @@ const getSettings = async () => {
     }
 };
 
-// 2. Keydi ama Update garee xogta (UPSERT)
 const saveSettings = async (shopName, currencyName, phone, webLink, social, logoData, isRegistered) => {
     try {
+        // Hubi in column-yada ay u qoran yihiin sida ay database-ka ugu qoran yihiin
         const query = `
-            INSERT INTO shop_settings (id, "shopName", "currencyName", phone, "webLink", social, "logoData", "isRegistered")
+            INSERT INTO shop_settings (id, shopname, currencyname, phone, weblink, social, logodata, isregistered)
             VALUES (1, $1, $2, $3, $4, $5, $6, $7)
             ON CONFLICT (id) DO UPDATE SET
-                "shopName" = EXCLUDED."shopName",
-                "currencyName" = EXCLUDED."currencyName",
+                shopname = EXCLUDED.shopname,
+                currencyname = EXCLUDED.currencyname,
                 phone = EXCLUDED.phone,
-                "webLink" = EXCLUDED."webLink",
+                weblink = EXCLUDED.weblink,
                 social = EXCLUDED.social,
-                "logoData" = EXCLUDED."logoData",
-                "isRegistered" = EXCLUDED."isRegistered",
-                "updatedAt" = CURRENT_TIMESTAMP
+                logodata = EXCLUDED.logodata,
+                isregistered = EXCLUDED.isregistered,
+                updatedat = CURRENT_TIMESTAMP
             RETURNING *;
         `;
 
@@ -38,8 +37,4 @@ const saveSettings = async (shopName, currencyName, phone, webLink, social, logo
     }
 };
 
-// MUHIIM: In loo dhoofiyo sidii Object
-module.exports = { 
-    getSettings, 
-    saveSettings 
-};
+module.exports = { getSettings, saveSettings };
