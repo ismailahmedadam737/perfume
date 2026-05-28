@@ -30,15 +30,24 @@ class _LoginPageState extends State<LoginPage> {
       var responseData = await UserService.loginUser(email, password);
 
       if (responseData != null) {
-        // SAXID: Halkan ayaan kaga saaraynaa role-ka si sax ah
-        // Waxaan hubinaynaa inuu yahay Map (haddii server-ku soo celiyo hal user)
-        // Haddii server-ku soo celiyo List, waxaan qaadanaynaa element-ka kowaad
+        // DEBUG: Si aan u aragno waxa server-ka ka yimid
+        print("DEBUG: API Response: $responseData");
         
-        dynamic userRecord = (responseData is List) ? responseData.first : responseData;
-        
-        String userRole = 'user'; // Default
-        if (userRecord is Map && userRecord.containsKey('role')) {
-          userRole = userRecord['role'].toString();
+        String userRole = 'user'; 
+
+        // SAFE LOGIC: Si aysan u dhicin cilada 'first'
+        // Haddii uu yahay List
+        if (responseData is List) {
+          if (responseData.isNotEmpty) {
+            var firstItem = responseData[0];
+            if (firstItem is Map) {
+              userRole = (firstItem['role'] ?? 'user').toString();
+            }
+          }
+        } 
+        // Haddii uu yahay Map (Object)
+        else if (responseData is Map) {
+          userRole = (responseData['role'] ?? 'user').toString();
         }
 
         print("DEBUG: Final Role identified: $userRole");
@@ -52,10 +61,11 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       } else {
-        _showSnackBar("Email ama Password khaldan!");
+        _showSnackBar("Email ama Password khaldan ama server-ka ayaa diiday!");
       }
     } catch (e) {
       _showSnackBar("Khalad ayaa dhacay: $e");
+      print("Error: $e");
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -111,8 +121,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-}
-
-extension on Map<String, dynamic> {
-  get first => null;
 }
