@@ -1,19 +1,37 @@
 const Customer = require('../models/customerModel');
 
-exports.getCustomers = async (req, res) => {
-  try {
-    const customers = await Customer.getAll();
-    res.json(customers);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+// 1. Soo saarista dhamaan macaamiisha
+exports.getAllCustomers = async (req, res) => {
+    try {
+        const customers = await Customer.getAll(); // Halkan isticmaal magaca cusub ee model-ka (getAll)
+        
+        // Waxaan ku darnay "success: true" iyo "data" si uu Flutter u aqriyo
+        res.status(200).json({ 
+            success: true, 
+            data: customers 
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            success: false, 
+            message: err.message 
+        });
+    }
 };
 
-exports.addCustomer = async (req, res) => {
-  try {
-    const newCustomer = await Customer.create(req.body);
-    res.status(201).json(newCustomer);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+// 2. Abuurista macmiil cusub
+exports.createCustomer = async (req, res) => {
+    try {
+        // Waxaan u gudbinaynaa req.body oo dhan Model-ka
+        const newCustomer = await Customer.create(req.body); 
+        
+        res.status(201).json({ 
+            success: true, 
+            data: newCustomer 
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            success: false, 
+            message: err.message 
+        });
+    }
 };
