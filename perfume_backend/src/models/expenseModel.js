@@ -1,13 +1,11 @@
 const pool = require('../config/db');
 
 const Expense = {
-    // 1. Soo saarista dhamaan kharashyada (Read)
     getAll: async () => {
         const result = await pool.query('SELECT * FROM expenses ORDER BY id DESC');
         return result.rows;
     },
 
-    // 2. Galinta kharash cusub (Create)
     create: async (expenseData) => {
         const { title, amount, note, date, is_paid } = expenseData;
         const result = await pool.query(
@@ -17,7 +15,6 @@ const Expense = {
         return result.rows[0];
     },
 
-    // 3. Cusubaysiinta xogta kharashka (Update)
     update: async (id, expenseData) => {
         const { title, amount, note, date, is_paid } = expenseData;
         const result = await pool.query(
@@ -27,7 +24,6 @@ const Expense = {
         return result.rows[0];
     },
 
-    // 4. Tirtirista kharashka (Delete)
     delete: async (id) => {
         const result = await pool.query('DELETE FROM expenses WHERE id = $1', [id]);
         return result.rowCount > 0;

@@ -2,12 +2,10 @@ const express = require('express');
 const router = express.Router();
 const expenseController = require('../controllers/expenseController');
 
-// Wadada: /api/expenses
-router.get('/', expenseController.getExpenses);   // Soo aqrin
-router.post('/', expenseController.addExpense);  // Kaydin
-
-// Wadada: /api/expenses/:id
-router.put('/:id', expenseController.updateExpense);    // Wax ka badal
-router.delete('/:id', expenseController.deleteExpense); // Tirtir
+// Wadada: /api/kharash (Hubi inaad index.js ugu magac dartay sidan)
+router.get('/', expenseController.getExpenses);
+router.post('/', expenseController.addExpense);
+router.put('/:id', expenseController.updateExpense);
+router.delete('/:id', expenseController.deleteExpense);
 
 module.exports = router;
