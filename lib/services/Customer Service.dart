@@ -2,74 +2,45 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class CustomerService {
-  // ⚠️ Xusuusin: Koodhka wuxuu hadda si toos ah u isticmaalayaa Server-kaaga Render ee Cloud-ka
+  // Hubi in URL-ku uu yahay midka saxda ah ee API-gaaga
   static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/customers";
 
-  // --- SOO SAARISTA DHAMAAN MACAAMIISHA (GET) ---
+  // --- SOO SAARISTA DHAMAAN MACAAMIISHA ---
   static Future<List<dynamic>> getCustomers() async {
     try {
-      final response = await http.get(Uri.parse(baseUrl));
+      // Waan ku darnay '/all' si uu ula hadlo route-ka aan samaynay
+      final response = await http.get(Uri.parse('$baseUrl/all'));
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        // Waxaan soo saaraynaa liiska ku jira 'data'
+        return responseData['data'] ?? []; 
       } else {
-        throw Exception("Laguma guulaysan soo saarista macaamiisha: ${response.statusCode}");
+        throw Exception("Server-ku wuxuu soo celiyay qalad: ${response.statusCode}");
       }
     } catch (e) {
       throw Exception("Cillad xidhiidh ayaa dhacday: $e");
     }
   }
 
-  // --- DIIWAANGELINTA MACMIIL CUSUB (POST) ---
+  // --- DIIWAANGELINTA MACMIIL CUSUB ---
   static Future<Map<String, dynamic>> addCustomer(Map<String, dynamic> data) async {
     try {
+      // Waan ku darnay '/add'
       final response = await http.post(
-        Uri.parse(baseUrl),
+        Uri.parse('$baseUrl/add'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(data),
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return responseData['data']; // Soo celi macmiilka cusub ee la abuuray
       } else {
-        final errorData = jsonDecode(response.body);
-        throw Exception(errorData['error'] ?? "Laguma guulaysan kaydinta macmiilka");
+        throw Exception("Laguma guulaysan kaydinta");
       }
     } catch (e) {
-      throw Exception("Cillad ayaa dhacday markii macmiilka la kaydinayay: $e");
-    }
-  }
-
-  // --- CUSUBAYSIINTA MACMIILKA (PUT) ---
-  static Future<void> updateCustomer(int id, Map<String, dynamic> data) async {
-    try {
-      final response = await http.put(
-        Uri.parse("$baseUrl/$id"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(data),
-      );
-
-      if (response.statusCode != 200) {
-        final errorData = jsonDecode(response.body);
-        throw Exception(errorData['error'] ?? "Laguma guulaysan cusubaysiinta");
-      }
-    } catch (e) {
-      throw Exception("Cillad ayaa dhacday: $e");
-    }
-  }
-
-  // --- TIRTIRISTA MACMIILKA (DELETE) ---
-  static Future<void> deleteCustomer(int id) async {
-    try {
-      final response = await http.delete(
-        Uri.parse("$baseUrl/$id"),
-      );
-
-      if (response.statusCode != 200) {
-        throw Exception("Laguma guulaysan in la tirtiro macmiilka");
-      }
-    } catch (e) {
-      throw Exception("Cillad ayaa dhacday: $e");
+      throw Exception("Cillad: $e");
     }
   }
 }
