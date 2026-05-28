@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class UserService {
-  // Hubi in URL-kan uu sax yahay sida Server-kaagu u qoran yahay
   static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/users';
 
   // LOGIN
@@ -24,16 +23,15 @@ class UserService {
     }
   }
 
-  // FETCH ALL USERS (Halkan ayuu ahaa meesha madhan)
+  // FETCH ALL USERS
   static Future<List<dynamic>> fetchUsers() async {
     try {
       final response = await http.get(
-        Uri.parse(baseUrl), // Waxay u dhigantaa /api/users
+        Uri.parse(baseUrl),
         headers: {"Content-Type": "application/json"},
       ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
-        // Waxaad soo celinaysaa liiska user-yada
         return jsonDecode(response.body); 
       } else {
         print("Server error: ${response.statusCode}");

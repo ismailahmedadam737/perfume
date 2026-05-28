@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perfume/services/user_service.dart';
-import 'package:perfume/main.dart';
+import 'package:perfume/main.dart'; // Hubi inuu yahay path-ka HomePage-kaaga
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,7 +14,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  // Function-ka asalka ahaa ee Login-ka
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -29,20 +28,18 @@ class _LoginPageState extends State<LoginPage> {
     try {
       var responseData = await UserService.loginUser(email, password);
 
-      if (responseData != null) {
-        // Waxaan u qaadanaynaa role-ka sidii aan horey u saxnay (user object gudahiisa)
+      if (responseData != null && responseData['success'] == true) {
+        // Halkan waxaan ka soo saaraynaa role-ka sida server-ku u soo diray
         String userRole = 'user';
-        if (responseData is Map && responseData.containsKey('user')) {
-           userRole = responseData['user']['role'].toString();
-        } else if (responseData is Map) {
-           userRole = responseData['role']?.toString() ?? 'user';
+        if (responseData.containsKey('user')) {
+          userRole = responseData['user']['role']?.toString().toLowerCase().trim() ?? 'user';
         }
 
         if (mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomePage(role: userRole.trim().toLowerCase()),
+              builder: (context) => HomePage(role: userRole),
             ),
           );
         }
@@ -63,7 +60,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // UI-ga asalka ahaa
     return Scaffold(
       body: Center(
         child: Container(
