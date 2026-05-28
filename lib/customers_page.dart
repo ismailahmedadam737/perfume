@@ -17,8 +17,8 @@ class _CustomersPageState extends State<CustomersPage> {
   final _pointsController = TextEditingController();
 
   List<dynamic> _customers = [];
-  final // Koodhkaaga dhexdiisa ku beddel nidaamkan:
-String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emulator isticmaalayso (10.0.2.2)
+  // URL-ka saxda ah ee API-gaaga
+  final String apiUrl = "https://perfume-api-hr26.onrender.com/api/customers";
 
   @override
   void initState() {
@@ -29,10 +29,12 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
   // API: Soo saarista xogta
   Future<void> _fetchCustomers() async {
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      final response = await http.get(Uri.parse('$apiUrl/all'));
       if (response.statusCode == 200) {
+        final data = json.decode(response.body);
         setState(() {
-          _customers = json.decode(response.body);
+          // Xallinta Type Error: Haddii ay tahay List ama Map 'data'
+          _customers = (data is List) ? data : (data['data'] ?? []);
         });
       }
     } catch (e) {
@@ -45,7 +47,7 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
     if (_nameController.text.isNotEmpty && _phoneController.text.isNotEmpty) {
       try {
         final response = await http.post(
-          Uri.parse(apiUrl),
+          Uri.parse('$apiUrl/add'),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({
             "name": _nameController.text,
@@ -56,12 +58,14 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
           }),
         );
 
-        if (response.statusCode == 201) {
-          _fetchCustomers(); // Dib u soo qabo xogta cusub
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          _fetchCustomers();
           _clearControllers();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Macmiilka waa la diiwaangeliyey!")),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Macmiilka waa la diiwaangeliyey!")),
+            );
+          }
         }
       } catch (e) {
         debugPrint("Error adding: $e");
@@ -86,20 +90,14 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Customer Management",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF1E1E2D)),
-            ),
+            const Text("Customer Management", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF1E1E2D))),
             const Text("Diiwaangeli oo maamul macaamiisha nidaamka", style: TextStyle(color: Colors.grey)),
             const SizedBox(height: 25),
 
+            // Form-ka
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)]),
               child: Column(
                 children: [
                   Row(
@@ -122,13 +120,8 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
                         child: ElevatedButton.icon(
                           onPressed: _addCustomer,
                           icon: const Icon(Icons.person_add_alt_1_outlined, color: Colors.white),
-                          label: const Text("Save Customer", style: TextStyle(color: Colors.white, fontSize: 16)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.pinkAccent,
-                            padding: const EdgeInsets.symmetric(vertical: 22),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            elevation: 0,
-                          ),
+                          label: const Text("Save Customer", style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent, padding: const EdgeInsets.symmetric(vertical: 22), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                         ),
                       ),
                     ],
@@ -139,50 +132,30 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
 
             const SizedBox(height: 30),
 
+            // Table-ka
             Expanded(
               child: Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10)],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: DataTable(
-                      headingRowColor: MaterialStateProperty.all(Colors.grey[50]),
-                      horizontalMargin: 20,
-                      columns: const [
-                        DataColumn(label: Text("NAME", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),
-                        DataColumn(label: Text("PHONE", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),
-                        DataColumn(label: Text("EMAIL", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),
-                        DataColumn(label: Text("ADDRESS", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),
-                        DataColumn(label: Text("LOYALTY", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey))),
-                      ],
-                      rows: _customers.map((customer) {
-                        return DataRow(cells: [
-                          DataCell(Text(customer['name'].toString(), style: const TextStyle(fontWeight: FontWeight.w500))),
-                          DataCell(Text(customer['phone'].toString())),
-                          DataCell(Text(customer['email'].toString())),
-                          DataCell(Text(customer['address'].toString())),
-                          DataCell(
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Colors.orange.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                "${customer['points']} pts",
-                                style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ]);
-                      }).toList(),
-                    ),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columns: const [
+                      DataColumn(label: Text("NAME")),
+                      DataColumn(label: Text("PHONE")),
+                      DataColumn(label: Text("EMAIL")),
+                      DataColumn(label: Text("ADDRESS")),
+                      DataColumn(label: Text("LOYALTY")),
+                    ],
+                    rows: _customers.map((customer) {
+                      return DataRow(cells: [
+                        DataCell(Text(customer['name']?.toString() ?? "-")),
+                        DataCell(Text(customer['phone']?.toString() ?? "-")),
+                        DataCell(Text(customer['email']?.toString() ?? "-")),
+                        DataCell(Text(customer['address']?.toString() ?? "-")),
+                        DataCell(Text("${customer['points'] ?? 0} pts")),
+                      ]);
+                    }).toList(),
                   ),
                 ),
               ),
@@ -200,14 +173,9 @@ String apiUrl = "https://perfume-api-hr26.onrender.com"; // Bedel hadii aad emul
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.pinkAccent, size: 20),
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
           filled: true,
           fillColor: const Color(0xFFF5F6FA),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 18),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
         ),
       ),
     );
