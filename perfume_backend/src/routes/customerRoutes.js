@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const customerController = require('../controllers/customerController');
 
-router.get('/', customerController.getAllCustomers);
-router.post('/', customerController.createCustomer);
+// Waxaan isticmaalayaa '/all' iyo '/add' si ay ula jaanqaadaan koodhkaaga kale
+router.get('/all', customerController.getAllCustomers);
+router.post('/add', customerController.createCustomer);
 
 module.exports = router;

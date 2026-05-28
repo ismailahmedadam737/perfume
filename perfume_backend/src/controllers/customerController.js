@@ -1,22 +1,19 @@
 const Customer = require('../models/customerModel');
 
-const getAllCustomers = async (req, res) => {
-    try {
-        const customers = await Customer.getCustomers();
-        res.status(200).json(customers);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+exports.getCustomers = async (req, res) => {
+  try {
+    const customers = await Customer.getAll();
+    res.json(customers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-const createCustomer = async (req, res) => {
-    try {
-        const { name, phone, email, address, points } = req.body;
-        const newCustomer = await Customer.addCustomer(name, phone, email, address, points);
-        res.status(201).json(newCustomer);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+exports.addCustomer = async (req, res) => {
+  try {
+    const newCustomer = await Customer.create(req.body);
+    res.status(201).json(newCustomer);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
-
-module.exports = { getAllCustomers, createCustomer };
