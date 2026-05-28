@@ -50,20 +50,20 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _pages = [
-      const GeneralReportPage(),        // 0
+      // const GeneralReportPage(),        // 0
       DashboardPage(onCardTap: (index) => setState(() => selectedIndex = index)), // 1
       const CustomersPage(),            // 2
-      const ProductRegistrationPage(),  // 3
-      const EmployeePage(),             // 4
-      const SalesPage(),                // 5
-      const SalesHistoryPage(),         // 6
-      const ExpensesPage(),             // 7
-      const PurchasePage(),             // 8
-      const SuppliersPage(),            // 9
-      const UsersPage(),                // 10
-      const SettingsPage(),             // 11
-      EmployeeSalaryPage(),             // 12
-      const SystemGuidePage(),          // 13
+      // const ProductRegistrationPage(),  // 3
+      // const EmployeePage(),             // 4
+      // const SalesPage(),                // 5
+      // const SalesHistoryPage(),         // 6
+      // const ExpensesPage(),             // 7
+      // const PurchasePage(),             // 8
+      // const SuppliersPage(),            // 9
+      // const UsersPage(),                // 10
+      // const SettingsPage(),             // 11
+      // EmployeeSalaryPage(),             // 12
+      // const SystemGuidePage(),          // 13
     ];
   }
 
