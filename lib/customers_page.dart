@@ -18,7 +18,6 @@ class _CustomersPageState extends State<CustomersPage> {
 
   List<dynamic> _customers = [];
   bool _isLoading = true;
-  final String baseUrl = "https://perfume-api-hr26.onrender.com/api/customers";
 
   @override
   void initState() {
@@ -27,8 +26,9 @@ class _CustomersPageState extends State<CustomersPage> {
   }
 
   Future<void> _fetchCustomers() async {
+    setState(() => _isLoading = true);
     try {
-      final response = await http.get(Uri.parse('$baseUrl/all'));
+      final response = await http.get(Uri.parse('https://perfume-api-hr26.onrender.com/api/customers/all'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -42,61 +42,44 @@ class _CustomersPageState extends State<CustomersPage> {
     }
   }
 
-  Future<void> _addCustomer() async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/add'),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "name": _nameController.text,
-          "phone": _phoneController.text,
-          "email": _emailController.text,
-          "address": _addressController.text,
-          "points": int.tryParse(_pointsController.text) ?? 0,
-        }),
-      );
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        _fetchCustomers();
-      }
-    } catch (e) {
-      debugPrint("Error adding: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FD),
-      body: _isLoading 
-        ? const Center(child: CircularProgressIndicator()) 
-        : Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                const Text("Customer Management", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 20),
-                // Form-ka waxaa ku jira meel la gelin karo
-                Expanded(
-                  child: ListView(
-                    children: [
-                      DataTable(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Customer Management", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
+                  // Halkan waxaad ku dartay Table-ka
+                  Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
                         columns: const [
-                          DataColumn(label: Text("Name")),
-                          DataColumn(label: Text("Phone")),
-                          DataColumn(label: Text("Points")),
+                          DataColumn(label: Text("NAME")),
+                          DataColumn(label: Text("PHONE")),
+                          DataColumn(label: Text("EMAIL")),
+                          DataColumn(label: Text("ADDRESS")),
                         ],
                         rows: _customers.map((c) => DataRow(cells: [
                           DataCell(Text(c['name']?.toString() ?? "-")),
                           DataCell(Text(c['phone']?.toString() ?? "-")),
-                          DataCell(Text(c['points']?.toString() ?? "0")),
+                          DataCell(Text(c['email']?.toString() ?? "-")),
+                          DataCell(Text(c['address']?.toString() ?? "-")),
                         ])).toList(),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
     );
   }
 }
