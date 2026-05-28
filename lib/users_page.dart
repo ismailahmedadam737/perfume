@@ -23,7 +23,7 @@ class _UsersPageState extends State<UsersPage> {
     
     if (mounted) {
       setState(() {
-        // CLEAN CODE: Hubi in data ay tahay List ka hor inta aan la dhiibin
+        // Halkan ayaan ku xaqiijinaynaa in xogta ay tahay List
         users = (data is List) ? data : [];
         isLoading = false;
       });

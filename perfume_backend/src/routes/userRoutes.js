@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-// Waxaan halkan ku xaqiijineynaa in function kasta oo la wacayo uu jiro
+// Routes
 router.get('/', userController.getUsers);
 router.post('/', userController.addUser);
 router.delete('/:id', userController.deleteUser);
-router.post('/login', userController.loginUser);
+router.post('/login', userController.loginUser); // Tani waa /login (haddii ay ku hoos jirto /api/users, waxay noqonaysaa /api/users/login)
 
 module.exports = router;

@@ -1,25 +1,37 @@
 const pool = require('../config/db');
 
-// 1. LOGIN USER
+// 1. LOGIN USER - Si buuxda loo saxay
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const query = 'SELECT * FROM users WHERE email = $1 AND password = $2';
+        
+        // Query-ga si sax ah u soo saaraya role-ka
+        const query = 'SELECT id, name, email, role FROM users WHERE email = $1 AND password = $2';
         const result = await pool.query(query, [email, password]);
 
         if (result.rows.length > 0) {
-            const user = result.rows[0];
-            const { password, ...userWithoutPassword } = user;
-            res.status(200).json({ success: true, user: userWithoutPassword });
+            let user = result.rows[0];
+            
+            // MUHIIM: Waxaan role-ka ka dhigeynaa xaraf yar (admin/user)
+            user.role = user.role ? user.role.toLowerCase().trim() : 'user';
+            
+            // DEBUG: Halkan ka eeg Render Logs si aad u hubiso waxa ka soo baxaya DB-ka
+            console.log(`LOGIN DEBUG: User ${user.email} logged in with role: ${user.role}`);
+            
+            res.status(200).json({ 
+                success: true, 
+                user: user 
+            });
         } else {
             res.status(401).json({ success: false, message: "Email ama Password khaldan" });
         }
     } catch (error) {
+        console.error("Login Error:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// 2. GET USERS
+// 2. GET USERS - Si loo soo saaro liiska isticmaalayaasha
 const getUsers = async (req, res) => {
     try {
         const result = await pool.query('SELECT id, name, email, role FROM users');
@@ -29,13 +41,16 @@ const getUsers = async (req, res) => {
     }
 };
 
-// 3. ADD USER
+// 3. ADD USER - Hubinta default role-ka markii la samaynayo
 const addUser = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
+        // Haddii role la waayo, waxaa lagu darayaa 'user'
+        const userRole = role ? role.toLowerCase().trim() : 'user';
+        
         const query = 'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *';
-        const values = [name, email, password, role || 'User'];
-        const result = await pool.query(query, values);
+        const result = await pool.query(query, [name, email, password, userRole]);
+        
         res.status(201).json({ success: true, user: result.rows[0] });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -53,7 +68,6 @@ const deleteUser = async (req, res) => {
     }
 };
 
-// MUHIIM: Halkan waa halka Node.js uu function-yada ka aqoonsanayo
 module.exports = {
     loginUser,
     getUsers,
