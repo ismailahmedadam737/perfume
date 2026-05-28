@@ -20,9 +20,11 @@ class _UsersPageState extends State<UsersPage> {
 
   Future<void> _fetchData() async {
     final data = await UserService.fetchUsers();
+    
     if (mounted) {
       setState(() {
-        users = data;
+        // CLEAN CODE: Hubi in data ay tahay List ka hor inta aan la dhiibin
+        users = (data is List) ? data : [];
         isLoading = false;
       });
     }
@@ -31,26 +33,40 @@ class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("User Management")),
+      appBar: AppBar(
+        title: const Text("User Management"),
+        backgroundColor: const Color(0xFF1E1E2D),
+        foregroundColor: Colors.white,
+      ),
       body: isLoading 
         ? const Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final user = users[index];
-              // Si aan u hubino in 'role' uu jiro
-              String role = (user['role'] ?? 'User').toString();
-              
-              return ListTile(
-                title: Text(user['name'] ?? "Unknown"),
-                subtitle: Text(user['email'] ?? ""),
-                trailing: Chip(
-                  label: Text(role),
-                  backgroundColor: role.toLowerCase() == 'admin' ? Colors.red[100] : Colors.blue[100],
-                ),
-              );
-            },
-          ),
+        : users.isEmpty 
+          ? const Center(child: Text("No users found."))
+          : ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                final user = users[index];
+                final String role = (user['role'] ?? 'User').toString();
+                
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: ListTile(
+                    leading: const CircleAvatar(
+                      backgroundColor: Colors.purpleAccent,
+                      child: Icon(Icons.person, color: Colors.white),
+                    ),
+                    title: Text(user['name'] ?? "Unknown"),
+                    subtitle: Text(user['email'] ?? "No email provided"),
+                    trailing: Chip(
+                      label: Text(role.toUpperCase()),
+                      backgroundColor: role.toLowerCase() == 'admin' 
+                          ? Colors.red[100] 
+                          : Colors.blue[100],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }
