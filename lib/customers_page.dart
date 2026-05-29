@@ -17,7 +17,6 @@ class _CustomersPageState extends State<CustomersPage> {
   final _pointsController = TextEditingController();
 
   List<dynamic> _customers = [];
-  // URL-ka saxda ah ee API-gaaga
   final String apiUrl = "https://perfume-api-hr26.onrender.com/api/customers";
 
   @override
@@ -26,16 +25,24 @@ class _CustomersPageState extends State<CustomersPage> {
     _fetchCustomers();
   }
 
-  // API: Soo saarista xogta
+  // API: Soo saarista xogta (Hagaajin lagu sameeyay)
   Future<void> _fetchCustomers() async {
     try {
       final response = await http.get(Uri.parse('$apiUrl/all'));
+      
+      // Print si aad u hubiso waxa server-ku soo celinayo
+      print("RESPONSE STATUS: ${response.statusCode}");
+      print("RESPONSE BODY: ${response.body}");
+
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        setState(() {
-          // Xallinta Type Error: Haddii ay tahay List ama Map 'data'
-          _customers = (data is List) ? data : (data['data'] ?? []);
-        });
+        final Map<String, dynamic> data = json.decode(response.body);
+        
+        if (mounted) {
+          setState(() {
+            // Halkan waxaa laga qaadayaa 'data' key-ga aad ku aragtay Browser-ka
+            _customers = data['data'] ?? [];
+          });
+        }
       }
     } catch (e) {
       debugPrint("Error fetching: $e");
@@ -59,7 +66,7 @@ class _CustomersPageState extends State<CustomersPage> {
         );
 
         if (response.statusCode == 200 || response.statusCode == 201) {
-          _fetchCustomers();
+          _fetchCustomers(); // Dib u cusboonaysii xogta
           _clearControllers();
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
