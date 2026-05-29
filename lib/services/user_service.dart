@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class UserService {
-  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/users';
+  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/customers/all';
 
   // LOGIN
   static Future<Map<String, dynamic>?> loginUser(String email, String password) async {
