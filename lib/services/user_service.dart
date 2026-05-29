@@ -1,45 +1,35 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class UserService {
-  static const String baseUrl = 'https://perfume-api-hr26.onrender.com/api/customers/all';
+class CustomerService {
+  static const String baseUrl = "https://perfume-api-hr26.onrender.com/api/customers";
 
-  // LOGIN
-  static Future<Map<String, dynamic>?> loginUser(String email, String password) async {
+  static Future<List<dynamic>> getCustomers() async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/login'),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email.trim(), "password": password.trim()}),
-      ).timeout(const Duration(seconds: 10));
+      final response = await http.get(Uri.parse('$baseUrl/all'));
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        // Waxaan hubinaynaa in 'data' uu jiro, haddii kale waxaan soo celinaynaa list madhan
+        return jsonResponse['data'] ?? [];
+      } else {
+        throw Exception("Server Error: ${response.statusCode}");
       }
-      return null;
     } catch (e) {
-      print("Login Error: $e");
-      return null;
+      throw Exception("Cillad xidhiidh: $e");
     }
   }
 
-  // FETCH ALL USERS
-  static Future<List<dynamic>> fetchUsers() async {
+  static Future<bool> addCustomer(Map<String, dynamic> data) async {
     try {
-      final response = await http.get(
-        Uri.parse(baseUrl),
+      final response = await http.post(
+        Uri.parse('$baseUrl/add'),
         headers: {"Content-Type": "application/json"},
-      ).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body); 
-      } else {
-        print("Server error: ${response.statusCode}");
-        return [];
-      }
+        body: jsonEncode(data),
+      );
+      return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
-      print("Fetch Error: $e");
-      return [];
+      return false;
     }
   }
 }
